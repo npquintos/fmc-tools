@@ -15,12 +15,12 @@ requests
 typing
 
 ## Table of Contents
-1. [export-acp-to-csv2.py](#export-acp-to-csvpy)
+1. export-acp-to-csv2.py
 
 ## export-acp-to-csv2.py
 ### Why
 This script export all of the rules in a specific access policy to a CSV spreadsheet. 
-The difference between this and the original ([rnwolfe/fmc-tools](https://github.com/rnwolfe/fmc-tools)) is that it gives you flexibility in picking up the fields you want extracted by editing the configuration file **fields_to_extract.json** - change the desired fields to "yes" (initial settings are "no"). When run the very first time (or when **fields_to_extract.json** is deleted), this configuration file will be automatically created with all field values set to "no". The user then had to edit this text file and change the fields to "yes" for those values that are to be extracted. Another file named **sample_data.json** is created as a reference so that the user will see sample values of what are contained on these fields.
+The difference between this and the original ([rnwolfe/fmc-tools/export-acp-to_csv.py](https://github.com/rnwolfe/fmc-tools/export-acp-to_csv.py)) is that it gives you flexibility in picking up the fields you want extracted by editing the configuration file **fields_to_extract.json** - change the desired fields to "yes" (initial settings are "no"). When run the very first time (or when **fields_to_extract.json** is deleted), this configuration file will be automatically created with all field values set to "no". The user then had to edit this text file and change the fields to "yes" for those values that are to be extracted. Another file named **sample_data.json** is created as a reference so that the user will see sample values of what are contained on these fields.
 
 If the field names are changed by the vendor in any way, this version would allow you to make it work by deleting **fields_to_extract.json** so that it is rebuilt from scratch using the new field names.
 
