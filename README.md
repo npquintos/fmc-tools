@@ -1,5 +1,5 @@
 # FMC Tools
-This is built upon a fork from [rnwolfe/fmc-tools](https://github.com/rnwolfe/fmc-tools) with some of my own changes to the function export-acp-to-csv.py and called it export-acp-acp-to-csv2.py. I also changed fireREST.py because it is throwing error with the original.
+This is built upon a fork from [rnwolfe/fmc-tools](https://github.com/rnwolfe/fmc-tools) with some of my own changes to the function **export-acp-to-csv.py** and called it **export-acp-acp-to-csv2.py**. I also changed **fireREST.py** because it is throwing errors.
 
 ## Requirements
 Install the following at C:\Python3InstallDirectory\Lib\site-packages:
