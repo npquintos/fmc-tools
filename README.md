@@ -5,14 +5,14 @@ This is built upon a fork from [rnwolfe/fmc-tools](https://github.com/rnwolfe/fm
 Install the following at C:\Python3InstallDirectory\Lib\site-packages:
 
 ### From this repository:
-extract_values.py
-fireREST.py
-schema.py
+- extract_values.py
+- fireREST.py
+- schema.py
 
 ### Modules
-urllib3
-requests
-typing
+- urllib3
+- requests
+- typing
 
 ## Table of Contents
 1. export-acp-to-csv2.py
