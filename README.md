@@ -1,133 +1,30 @@
 # FMC Tools
-A repository of python scripts to perform some routine changes in a quicker way than FMC typically allows via GUI. This is built upon a fork from [kaisero/fireREST](https://github.com/kaisero/fireREST) with some of my own changes to the functions. The tools were also inspired by [this post by the same person](http://dependencyhell.net/2017/08/27/Automating-ACP-Bulk-Changes/).
+This is built upon a fork from [rnwolfe/fmc-tools](https://github.com/rnwolfe/fmc-tools) with some of my own changes to the function export-acp-to-csv.py and called it export-acp-acp-to-csv2.py. I also changed fireREST.py because it is throwing error with the original.
 
 ## Requirements
-Clone this repo and install the requirements for [fireREST](https://github.com/kaisero/fireREST):
-``` bash
-git clone https://github.com/rnwolfe/fmc-tools/fmc-tools.git
-pip install -r fireREST/requirements.txt
-```
-Afterwards, you can use the specific tool script you want.
+Install the following at C:\Python3InstallDirectory\Lib\site-packages:
+
+### From this repository:
+extract_values.py
+fireREST.py
+schema.py
+
+### Modules
+urllib3
+requests
+typing
 
 ## Table of Contents
-1. [export-acp-to-csv.py](#export-acp-to-csvpy)
-2. [update-all-rules.py](#update-all-rulespy)
-## export-acp-to-csv.py
+1. [export-acp-to-csv2.py](#export-acp-to-csvpy)
+
+## export-acp-to-csv2.py
 ### Why
-The basis for this script was to export all of the rules in a specific access policy to a CSV spreadsheet for use in analyzing the ruleset for consolidation, optimization, or otherwise. It could also be used as a form of version control / comparison over time. For example, this script could be run as a cron job and a diff run on two different iterations of the policy for troubleshooting purposes.
-### Usage
-#### FMC Details
-In this script, just update the top of file variables with your FMC information and the access policy name you wish to export. The domain is normally `Global` in most cases: 
-```python
-device = 'fmc.domain.com'
-username = 'api-user'
-password = 'api-password'
-domain = 'Global'
-ac_policy = 'api-test-policy'
-```
+This script export all of the rules in a specific access policy to a CSV spreadsheet. 
+The difference between this and the original ([rnwolfe/fmc-tools](https://github.com/rnwolfe/fmc-tools)) is that it gives you flexibility in picking up the fields you want extracted by editing the configuration file **fields_to_extract.json** - change the desired fields to "yes" (initial settings are "no"). When run the very first time (or when **fields_to_extract.json** is deleted), this configuration file will be automatically created with all field values set to "no". The user then had to edit this text file and change the fields to "yes" for those values that are to be extracted. Another file named **sample_data.json** is created as a reference so that the user will see sample values of what are contained on these fields.
 
-### Execution
-```bash
-$ python export-acp-to-csv.py
--------------------------------------------------------------------------------------
-Domain: e276abec-e0f2-11e3-8169-6d9ed49b625f
--------------------------------------------------------------------------------------
-Access control policy: api-test-policy: 0050568C-D66C-0ed3-0000-171798708124
--------------------------------------------------------------------------------------
-Writing rule #1 to CSV...
-Writing rule #2 to CSV...
-Writing rule #3 to CSV...
-Writing rule #4 to CSV...
-Writing rule #5 to CSV...
-File is at: ./api-test-policy.csv
-```
+If the field names are changed by the vendor in any way, this version would allow you to make it work by deleting **fields_to_extract.json** so that it is rebuilt from scratch using the new field names.
 
-#### Example Results
-Please see [example CSV output file here](https://github.com/rnwolfe/fmc-tools/blob/master/api-test-policy.csv).
-## update-all-rules.py
-### Why
-The basis for creating this script was to update all the rules in a specified access policy with inspection and logging settings.
+If you want to add/delete fields to be extracted, all you need to do is edit **fields_to_extract.json** accordingly before running the script. You might not remember what the configuration file name is, hence, the script gives you the chance to edit this file (and supplying you with the configuration file name) after being run.
 
-When migrating a firewall to Firepower Threat Defense using the Firepower Management Center Migration Tool, the access rules are all converted to a pre-filter policy or an access policy depending on your selection. If you select access policy, the rules don't get any inspection or logging settings. Afterwards, you'd have to manually go in and update each rule which is not scalable for large rulesets.
+Another difference between this one and the original is the csv file heading names. This version supplies the keys and indeces that allows you to get that value. It is also dynamic following whatever is in the configuration.
 
-This tool allows you to specify *already configured* intrusion policies, file policies, variable sets, and syslog alert objects as well as define when to log the connection (at beginning and/or end) and whether to log connection events to the FMC log viewer.
-### Usage
-#### FMC Details
-In this script, just update the top of file variables with your FMC information. The domain is normally `Global` in most cases: 
-```python
-device = 'fmc.domain.com'
-username = 'api-user'
-password = 'api-password'
-domain = 'Global'
-ac_policy = 'api-test-policy'
-```
-#### Define Inspection and Logging Settings
-Then specify the objects you want to apply to the rules, as well as the settings for the logging.
-```python
-# Inspection settings
-#  Leave variable empty (var = '') if you don't want to include the setting
-intrusion_policy = 'api-intrusion-policy'
-file_policy = 'api-file-policy'
-variable_set = 'api-variable-set'
-
-# Logging settings
-#  Leave variable empty (var = '') if you don't want to include the setting
-syslog_to_server = 'api-syslog-server'
-log_to_fmc = 'true'
-log_at_begin = 'false'
-log_at_end = 'true'
-```
-
-### Execution
-```bash
-$ python update-all-rules.py
--------------------------------------------------------------------------------------
-Domain: e276abec-e0f2-11e3-8169-6d9ed49b625f
--------------------------------------------------------------------------------------
-Access control policy: api-test-policy: 0050568C-D66C-0ed3-0000-171798708124
- Intrusion policy: api-intrusion-policy: 0ce70864-7eeb-11e8-8f7e-9ede74934a97
- File policy: api-file-policy: f0781542-7f03-11e8-8f7e-9ede74934a97
- Variable Set: api-variable-set: e1658ab2-7f03-11e8-8f7e-9ede74934a97
- Log server: api-syslog-server: 573468de-7f05-11e8-971f-b0981aec49c1
- Log to event viewer: true
- Log at beginning: false
- Log at end: true
--------------------------------------------------------------------------------------
-Rule: test rule 1, in Policy: api-test-policy.
-  Syslog configuration already exists, or not specified. Skipping syslog config.
-  Intrusion Policy configuration already exists, or not specified. Skipping intrusion policy.
-  File Policy configuration already exists, or not specified. Skipping file policy configuration.
-  Variable Set configuration already exists, or not specified. Skipping variable set.
-  Sending updated rule configuration...
- [SUCCESS]
-Rule: test rule 2, in Policy: api-test-policy.
-  Syslog configuration already exists, or not specified. Skipping syslog config.
-  Intrusion Policy configuration already exists, or not specified. Skipping intrusion policy.
-  File Policy configuration already exists, or not specified. Skipping file policy configuration.
-  Variable Set configuration already exists, or not specified. Skipping variable set.
-  Sending updated rule configuration...
- [SUCCESS]
-Rule: test rule 3, in Policy: api-test-policy.
-  Syslog configuration already exists, or not specified. Skipping syslog config.
-  Intrusion Policy configuration already exists, or not specified. Skipping intrusion policy.
-  File Policy configuration already exists, or not specified. Skipping file policy configuration.
-  Variable Set configuration already exists, or not specified. Skipping variable set.
-  Sending updated rule configuration...
- [SUCCESS]
-Rule: test rule 4, in Policy: api-test-policy.
-  Syslog configuration already exists, or not specified. Skipping syslog config.
-  Rule not set to ALLOW, clearing intrusion settings. Overwriting log settings with log at beginning and send to event viewer.
-  Sending updated rule configuration...
- [SUCCESS]
-Rule: test rule 5, in Policy: api-test-policy.
-  Variable Set configuration already exists, or not specified. Skipping variable set.
-  Sending updated rule configuration...
- [SUCCESS]
-```
-
-#### Example Results in GUI
-##### Before
-![before](https://imgur.com/ELof6xB.png)
-
-##### After
-![after](https://imgur.com/Hk9Vzof.png)
